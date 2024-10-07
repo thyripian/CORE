@@ -1,0 +1,52 @@
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.2",
+    "concurrently": "^9.0.1",
+    "leaflet": "^1.9.4",
+    "loader-utils": "^3.3.1",
+    "npm-force-resolutions": "^0.0.10",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.23.1",
+    "react-scripts": "^5.0.1",
+    "shell-quote": "^1.8.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "concurrently -k -s first \"npm run start-react\" \"npm run start-backend\" \"npm run wait && npm run start-search\" \"npm run wait2 && npm run start-update\"",
+    "start-react": "react-scripts start",
+    "start-backend": "python ../../core/run_app.py",
+    "start-search": "python ../../search_functionality/elastic_query.py",
+    "start-update": "python ../../update_functionality/check_updates.py",
+    "wait": "node ./scripts/check-status.js",
+    "wait2": "node ./scripts/check-search-init.js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    margin-top: calc(0vh); /* Move the content up */
+    padding: 20px;
+  }
+  
+  .settings-content h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .settings-content p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }

@@ -1,0 +1,39 @@
+/* src/UpdateCheckerComponent.css */
+.update-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-top: calc(-2vh);  /* Adjust to center the content properly */
+}
+
+.update-button {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 20px;
+  background-color: black; /* Button background color */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Roboto', sans-serif; /* Ensure the font is applied */
+}
+
+.update-button:hover {
+  background-color: rgb(31, 31, 31);
+  box-shadow: 0 2px 4px white;
+}
+
+.update-status {
+  margin-top: 20px;
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+  background-color: #f9f9f9;
+  color: black; /* Ensure the text color is black */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif; /* Ensure the font is applied */
+}

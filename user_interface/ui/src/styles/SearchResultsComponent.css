@@ -1,0 +1,153 @@
+/* src/styles/SearchResultsComponent.css */
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    width: calc(100vw - 100px);
+    position: relative;
+    box-sizing: border-box;
+    background-color: transparent;
+    margin-top: 3%;
+    padding-bottom: 20px; /* Add space at the bottom */
+    margin-bottom: 2%;
+  }
+  
+  .results-container .search-box-wrapper {
+    position: relative;
+    width: 100%;
+    height: 150px; /* Fixed height to prevent movement */
+    margin-bottom: 20px;
+  }
+  
+  .results-container .search-box {
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    top: 125px; /* Position at the top of the wrapper */
+    left: 70px; /* Position at the left of the wrapper */
+    height: 50px; /* Fixed height */
+  }
+  
+  .results-container .search-input {
+    width: 40%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 1.2em;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .results-container .search-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 10px;
+    height: 100%; /* Ensure button height matches the input */
+  }
+  
+  .results-container .search-button:hover {
+    background-color: rgb(31, 31, 31);
+    box-shadow: 0 2px 4px white;
+  }
+  
+  .results-container .view-toggle {
+    display: flex;
+    position: fixed;
+    top: 195px; /* Position at the top of the wrapper */
+    left: 70px; /* Position at the left of the wrapper */
+    height: 30px; /* Fixed height */
+    width: 250px;
+    z-index: 2; /* Ensure the buttons are above other elements */
+  }
+  
+  .results-container .view-button {
+    padding: 5px 10px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 20px;
+    background-color: lightgray;
+    color: black;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  
+  .results-container .view-button.active {
+    background-color: black;
+    color: white;
+    box-shadow: 0 2px 4px white;
+  }
+  
+  .search-results {
+    width: 100%;
+    text-align: left;
+    position: fixed;
+    top: 235px;
+    flex-grow: 1;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: transparent !important;
+    z-index: 1;
+  }
+  
+  .search-results::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100vw - 150px);
+    height: 100%;
+    background-color: rgba(249, 249, 249, 0.5);
+    border-radius: 10px;
+    z-index: 0;
+  }
+  
+  .results-content {
+    position: relative;
+    z-index: 1;
+    color: black;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+    width: calc(100vw - 200px);
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .results-content li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .results-content li:last-child {
+    border-bottom: none;
+  }
+  
+  .result-link {
+    color: #1a0dab;
+    text-decoration: none;
+  }
+  
+  .result-link:hover {
+    text-decoration: underline;
+  }
+  
+  .map-container {
+    width: calc(100vw - 200px);
+    height: calc(60vh); /* Adjust height for the map */
+    margin-top: 20px;
+  }
+  

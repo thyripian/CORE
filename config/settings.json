@@ -1,0 +1,33 @@
+{
+    "directory": "YOUR_DIRECTORY_PATH", 
+    "user_config": {
+        "postgres": {
+            "minconn": 1,
+            "maxconn": 10,
+            "user": "YOUR_DB_USER",
+            "password": "YOUR_DB_PASSWORD",
+            "host": "localhost",
+            "port": "5432",
+            "database": "YOUR_DATABASE"
+        },
+        "elasticsearch": {
+            "hosts": ["https://localhost:9200"],
+            "basic_auth": {
+                "user": "YOUR_ELASTIC_USER",
+                "password": "YOUR_ELASTIC_PASSWORD"
+            },
+            "verify_certs": true,
+            "ca_certs": "YOUR_CA_CERT_PATH",
+            "index": "YOUR_ELASTIC_INDEX"
+        },
+        "sqlite": {
+            "sqlite_directory": "YOUR_SQLITE_DIR"
+        },
+        "keywords": {
+            "keyword_dir": "YOUR_KEYWORD_DIR"
+        },
+        "logging": {
+            "log_directory": "../logs"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "logging": {
+        "log_directory": "./logs"
+  },
+  "nlp": {
+        "model": "en_core_web_sm"
+  },
+  "keywords": {
+        "default_path": "./utilities/default_keywords"
+  },
+  "output": {
+        "fallback_csv": "~/Downloads/CORE_fallback_test.csv"
+  },
+  "testing_mode": {
+        "_comment": "Change testing_flag to true to test all storage options.",
+        "testing_flag": true
+  }
+}
