@@ -68,10 +68,9 @@ class DatabaseConfig:
             logger.error(
                 "Failed to import %s, %s operations will not be available.",
                 module_name,
-                module_name.capitalize()
+                module_name.capitalize(),
             )
             return False
-
 
     @classmethod
     def set_keyword_dir(cls):
