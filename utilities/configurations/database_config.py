@@ -1,5 +1,5 @@
+import importlib
 import logging
-import os
 
 import pandas as pd
 
@@ -57,16 +57,21 @@ class DatabaseConfig:
     def try_import(cls, module_name, import_statement=None):
         try:
             if import_statement:
-                exec(import_statement)
+                # Dynamically import module using importlib for safety
+                importlib.import_module(import_statement)
             else:
-                __import__(module_name)
-            logger.info(f"{module_name.capitalize()} Available: True")
+                importlib.import_module(module_name)
+
+            logger.info("%s Available: True", module_name.capitalize())
             return True
-        except ImportError:
+        except ModuleNotFoundError:
             logger.error(
-                f"Failed to import {module_name}, {module_name.capitalize()} operations will not be available."
+                "Failed to import %s, %s operations will not be available.",
+                module_name,
+                module_name.capitalize()
             )
             return False
+
 
     @classmethod
     def set_keyword_dir(cls):
@@ -80,12 +85,12 @@ class DatabaseConfig:
             logger.error(
                 "Unable to identify keyword directory using selected config file."
             )
-            logger.info(f"Defaulting keyword directory to: {default_keyword_dir}")
+            logger.info("Defaulting keyword directory to: %s", default_keyword_dir)
             cls.keyword_dir = default_keyword_dir
         return cls.keyword_dir
 
     @classmethod
-    def set_postgres_conn_data(cls, postgres_config=None):
+    def set_postgres_conn_data(cls):
         if not cls.postgres_config:
             cls.postgres_config = ConfigManager.get_user_config("postgres")
         if cls.postgres_config:
@@ -101,7 +106,7 @@ class DatabaseConfig:
         logger.info("INSIDE SET_ELASTIC_CONN_DATA")
         if not cls.elastic_config:
             cls.elastic_config = user_config.get("elasticsearch")
-        logger.info(f"ELASTIC CONFIG: {cls.elastic_config}")
+        logger.info("ELASTIC CONFIG: %s", cls.elastic_config)
 
         if cls.elastic_config:
             cls.elastic_conn_data = cls.elastic_config
