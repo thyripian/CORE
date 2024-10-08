@@ -117,7 +117,8 @@ This will start the React application, which can be accessed in your browser (us
 
 ##  Running the Application
 - Start your backend services (Elasticsearch, Postgres, etc.).
-- Open the React frontend in your browser and begin interacting with the application.
+- Open the React frontend in your browser and wait for the application to initialize.
+- Begin interacting with the application.
 
 ## Directory Structure
 - **config/:** Contains ```sys_config.json``` and ```settings.json``` to be customized for your environment.
@@ -138,7 +139,6 @@ This will start the React application, which can be accessed in your browser (us
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
 - **API Reformatting:** Reformatting APIs to match RESTful standards.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
-- **Loading Splashpage:** Adding a "Loading" splashpage prior to the homepage, only moving on once the entire backend has initialized.
 - **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.
 - **Expanding Map Results:** Expanding map results to show images extracted from files at specific locations.
 - **Building out Settings Page:** Allowing user-defined settings within the user interface.
