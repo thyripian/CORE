@@ -2,8 +2,8 @@ const axios = require('axios');
 
 const checkStatus = async () => {
     try {
-        const response = await axios.get('http://localhost:5000/search-init-status');
-        if (response.data && response.data.status === "Initialized successfully") {
+        const response = await axios.get('http://localhost:5000/status');
+        if (response.data && response.data.status === "ready") {
             console.log("Search service initialized successfully");
             process.exit(0)
         } else {

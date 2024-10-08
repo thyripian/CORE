@@ -17,11 +17,11 @@ function SearchComponent() {
     <div className="page-content">
       <div className="search-container">
         <div className="search-box">
-          <input 
-            type="text" 
-            value={query} 
-            onChange={(e) => setQuery(e.target.value)} 
-            className="search-input" 
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="search-input"
             placeholder="Search..."
           />
           <button onClick={handleSearch} className="search-button">Search</button>

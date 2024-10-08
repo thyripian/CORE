@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class BaseDatabase(ABC):
     @abstractmethod
     def check_exists(self, hash_value):
@@ -7,7 +8,7 @@ class BaseDatabase(ABC):
         Check if a record exists in the database.
         """
         pass
-    
+
     @abstractmethod
     def save_data(self, info):
         """

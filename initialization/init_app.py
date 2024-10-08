@@ -1,13 +1,17 @@
-import os
 import datetime
 import logging
-from utilities.configurations.configs import AppConfig
-from utilities import DatabaseConfig, Keywords, setup_logging, init_logging, select_file, select_folder, confirm_selection
-from utilities.logging.logging_utilities import error_handler
+import os
+
 from database_operations import DatabaseManager
+from utilities import (DatabaseConfig, Keywords, confirm_selection,
+                       init_logging, select_file, select_folder, setup_logging)
+from utilities.configurations.configs import AppConfig
+from utilities.logging.logging_utilities import error_handler
+
 from .initialize_elasticsearch import InitElastic
 
 logger = logging.getLogger(__name__)
+
 
 class AppInitialization:
     availability = {}
@@ -41,7 +45,7 @@ class AppInitialization:
 
     @classmethod
     def load_configurations(cls, user_conf):
-        DatabaseConfig()  
+        DatabaseConfig()
         cls.availability = DatabaseConfig.availability
         logger.info(f"Availability: {cls.availability}")
 
@@ -52,7 +56,7 @@ class AppInitialization:
         except Exception as e:
             print(f"Error initializing logging: {e}")
 
-        cls.user_config_file = cls.settings.get('user_config')
+        cls.user_config_file = cls.settings.get("user_config")
 
         try:
             AppConfig.load_user_config(cls.user_config_file)
@@ -71,7 +75,7 @@ class AppInitialization:
         # Get the absolute path to the directory where this script is located
         base_dir = os.path.dirname(os.path.abspath(__file__))
         # Construct the absolute path for the logs directory
-        log_directory = os.path.join(base_dir, '..', 'logs')
+        log_directory = os.path.join(base_dir, "..", "logs")
         print("LOG DIRECTORY: ", log_directory)
 
         if not os.path.exists(log_directory):
@@ -94,26 +98,28 @@ class AppInitialization:
         DatabaseManager.test_initial_connections()
         cls.connection_status = DatabaseManager.connection_status
         logger.session(f"Connection Status: {cls.connection_status}")
-    
+
     @classmethod
     @error_handler
     def set_database_connections(cls):
         failures = []
 
         if not cls.setup_postgres_conn():
-            failures.append('PostgreSQL')
+            failures.append("PostgreSQL")
 
         if not cls.setup_elastic_conn():
-            failures.append('Elasticsearch')
+            failures.append("Elasticsearch")
 
         if not cls.setup_sqlite_conn():
-            failures.append('SQLite')
+            failures.append("SQLite")
 
         if not failures:
             logger.info("All database connections were set successfully.")
         else:
-            failure_message = ', '.join(failures)
-            logger.error(f"Failed to set up the following database connections: {failure_message}")
+            failure_message = ", ".join(failures)
+            logger.error(
+                f"Failed to set up the following database connections: {failure_message}"
+            )
 
     @classmethod
     @error_handler(reraise=False)
@@ -138,7 +144,9 @@ class AppInitialization:
             es_client = DatabaseManager.get_elasticsearch_client()
             if es_client.ping():
                 if DatabaseManager.ensure_index_exists(DatabaseConfig.elastic_index):
-                    logger.info("Elasticsearch connection and index setup successfully.")
+                    logger.info(
+                        "Elasticsearch connection and index setup successfully."
+                    )
                     return True
                 else:
                     logger.error("Failed to ensure Elasticsearch index exists.")
@@ -158,13 +166,13 @@ class AppInitialization:
         except Exception as e:
             logger.error(f"SQLite setup failed: {e}")
             return False
-    
+
     @classmethod
     @error_handler
     def load_keywords(cls):
         Keywords.load_latest_keywords()
         logger.info("Keywords loaded successfully.")
-    
+
     @classmethod
     @error_handler
     def select_processing_directory(cls):
@@ -172,11 +180,14 @@ class AppInitialization:
         while not dir_confirmed:
             cls.process_dir = select_folder("Select the directory to process.")
             logger.info(f"Selected dir: {cls.process_dir}")
-            dir_confirmed = confirm_selection("Processing Directory Selection", f"Process this directory?\n{cls.process_dir}")
+            dir_confirmed = confirm_selection(
+                "Processing Directory Selection",
+                f"Process this directory?\n{cls.process_dir}",
+            )
         logger.info(f"Processing directory selected: {cls.process_dir}")
 
     @classmethod
     @error_handler
     def set_processing_directory(cls):
-        cls.process_dir = cls.settings.get('directory')
+        cls.process_dir = cls.settings.get("directory")
         logger.info(f"Processing directory set from settings: {cls.process_dir}")

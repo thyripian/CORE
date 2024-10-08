@@ -1,22 +1,24 @@
-import pytest
 import logging
 import os
 from unittest import mock
-from utilities.logging.logging_utilities import (
-    session,
-    setup_logging,
-    init_logging,
-    error_handler,
-    SESSION_LEVEL_NUM,
-    SESSION_LEVEL_NAME
-)
+
+import pytest
+
+from utilities.logging.logging_utilities import (SESSION_LEVEL_NAME,
+                                                 SESSION_LEVEL_NUM,
+                                                 error_handler, init_logging,
+                                                 session, setup_logging)
+
 
 # Test custom logging level
 def test_custom_logging_level():
-    logger = logging.getLogger('test_logger')
-    with mock.patch.object(logger, '_log') as mock_log:
-        logger.session('This is a session level message')
-        mock_log.assert_called_once_with(SESSION_LEVEL_NUM, 'This is a session level message', ())
+    logger = logging.getLogger("test_logger")
+    with mock.patch.object(logger, "_log") as mock_log:
+        logger.session("This is a session level message")
+        mock_log.assert_called_once_with(
+            SESSION_LEVEL_NUM, "This is a session level message", ()
+        )
+
 
 # Test setup logging
 def test_setup_logging(tmp_path):
@@ -31,9 +33,10 @@ def test_setup_logging(tmp_path):
     logger = logging.getLogger()
     logger.info("This is a test info message")
 
-    with open(log_path, 'r') as log_file:
+    with open(log_path) as log_file:
         logs = log_file.read()
         assert "This is a test info message" in logs
+
 
 # Test init logging
 def test_init_logging(tmp_path, caplog):
@@ -41,7 +44,9 @@ def test_init_logging(tmp_path, caplog):
     log_filename = "test_log.log"
 
     setup_logging(str(log_directory), log_filename)
-    logger = logging.getLogger('utilities.logging_utilities')  # Use the correct logger name
+    logger = logging.getLogger(
+        "utilities.logging_utilities"
+    )  # Use the correct logger name
 
     # Ensure the logger propagates messages to the root logger
     logger.propagate = True
@@ -55,7 +60,7 @@ def test_init_logging(tmp_path, caplog):
 
     # Check directly in the log file
     log_path = log_directory / log_filename
-    with open(log_path, 'r') as log_file:
+    with open(log_path) as log_file:
         log_contents = log_file.read()
         print(f"Log file contents:\n{log_contents}")
 
@@ -64,11 +69,15 @@ def test_init_logging(tmp_path, caplog):
         "REPORT DATA EXTRACTION PIPELINE (R-DEP)",
         "“Do or do not, there is no try.”",
         "Developed by Kevan White - 389 Data Team",
-        "Current as of: 09 May 2024"
+        "Current as of: 09 May 2024",
     ]
 
     for expected_message in expected_messages:
-        assert any(expected_message in message for message in caplog.messages) or expected_message in log_contents
+        assert (
+            any(expected_message in message for message in caplog.messages)
+            or expected_message in log_contents
+        )
+
 
 # Test error handler
 def test_error_handler(caplog):
@@ -80,7 +89,11 @@ def test_error_handler(caplog):
         result = function_that_raises()
 
     assert result == "default"
-    assert any("An error occurred in function_that_raises: This is an error" in message for message in caplog.messages)
+    assert any(
+        "An error occurred in function_that_raises: This is an error" in message
+        for message in caplog.messages
+    )
+
 
 # Test error handler with reraise
 def test_error_handler_with_reraise():

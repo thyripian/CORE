@@ -8,12 +8,12 @@
     margin-top: calc(0vh); /* Move the content up */
     padding: 20px;
   }
-  
+
   .history-content h2 {
     font-size: 2em;
     margin-bottom: 20px;
   }
-  
+
   .history-content p {
     font-size: 1.2em;
     margin-bottom: 10px;

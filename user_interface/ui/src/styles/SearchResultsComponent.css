@@ -15,14 +15,14 @@
     padding-bottom: 20px; /* Add space at the bottom */
     margin-bottom: 2%;
   }
-  
+
   .results-container .search-box-wrapper {
     position: relative;
     width: 100%;
     height: 150px; /* Fixed height to prevent movement */
     margin-bottom: 20px;
   }
-  
+
   .results-container .search-box {
     width: 100%;
     position: fixed;
@@ -33,7 +33,7 @@
     left: 70px; /* Position at the left of the wrapper */
     height: 50px; /* Fixed height */
   }
-  
+
   .results-container .search-input {
     width: 40%;
     padding: 10px;
@@ -43,7 +43,7 @@
     font-family: 'Roboto', sans-serif;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-  
+
   .results-container .search-button {
     padding: 10px 20px;
     font-size: 1.2em;
@@ -55,12 +55,12 @@
     margin-left: 10px;
     height: 100%; /* Ensure button height matches the input */
   }
-  
+
   .results-container .search-button:hover {
     background-color: rgb(31, 31, 31);
     box-shadow: 0 2px 4px white;
   }
-  
+
   .results-container .view-toggle {
     display: flex;
     position: fixed;
@@ -70,7 +70,7 @@
     width: 250px;
     z-index: 2; /* Ensure the buttons are above other elements */
   }
-  
+
   .results-container .view-button {
     padding: 5px 10px;
     font-size: 0.9em;
@@ -83,13 +83,13 @@
     margin-right: 10px;
     font-weight: bold;
   }
-  
+
   .results-container .view-button.active {
     background-color: black;
     color: white;
     box-shadow: 0 2px 4px white;
   }
-  
+
   .search-results {
     width: 100%;
     text-align: left;
@@ -102,7 +102,7 @@
     background-color: transparent !important;
     z-index: 1;
   }
-  
+
   .search-results::before {
     content: '';
     position: absolute;
@@ -114,7 +114,7 @@
     border-radius: 10px;
     z-index: 0;
   }
-  
+
   .results-content {
     position: relative;
     z-index: 1;
@@ -126,28 +126,27 @@
     padding: 0;
     margin: 0;
   }
-  
+
   .results-content li {
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
   }
-  
+
   .results-content li:last-child {
     border-bottom: none;
   }
-  
+
   .result-link {
     color: #1a0dab;
     text-decoration: none;
   }
-  
+
   .result-link:hover {
     text-decoration: underline;
   }
-  
+
   .map-container {
     width: calc(100vw - 200px);
     height: calc(60vh); /* Adjust height for the map */
     margin-top: 20px;
   }
-  

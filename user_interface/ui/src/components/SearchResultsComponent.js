@@ -41,24 +41,24 @@ function SearchResultsComponent() {
     <div className="results-container">
       <div className="search-box-wrapper">
         <div className="search-box">
-          <input 
-            type="text" 
-            value={query} 
-            readOnly 
-            className="search-input" 
+          <input
+            type="text"
+            value={query}
+            readOnly
+            className="search-input"
             placeholder="Search..."
           />
           <button className="search-button">Search</button>
         </div>
         <div className="view-toggle">
-          <button 
-            className={`view-button ${viewMode === 'list' ? 'active' : ''}`} 
+          <button
+            className={`view-button ${viewMode === 'list' ? 'active' : ''}`}
             onClick={() => setViewMode('list')}
           >
             List View
           </button>
-          <button 
-            className={`view-button ${viewMode === 'map' ? 'active' : ''}`} 
+          <button
+            className={`view-button ${viewMode === 'map' ? 'active' : ''}`}
             onClick={() => setViewMode('map')}
           >
             Map View

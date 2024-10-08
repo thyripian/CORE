@@ -1,25 +1,31 @@
 # STILL BEING BUILT --> NEEDS LOGIC FOR SETTING DIRECTORY
 
-import logging
-import sqlite3
-import os
 import json
-from utilities import DatabaseConfig
-from .db_manager import DatabaseManager
-from utilities.logging.logging_utilities import error_handler
+import logging
+import os
+import sqlite3
+
 from database_operations.base_database import BaseDatabase
+from utilities import DatabaseConfig
+from utilities.logging.logging_utilities import error_handler
+
+from .db_manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
+
 
 class SQLiteDatabase(BaseDatabase):
     def __init__(self):
         self.conn_params = DatabaseManager.sqlite_database
 
     def check_exists(self, hash_value):
-            with sqlite3.connect(self.conn_params) as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT EXISTS(SELECT 1 FROM reports WHERE SHA256_hash=?)", (hash_value,))
-                return cursor.fetchone()[0]
+        with sqlite3.connect(self.conn_params) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT EXISTS(SELECT 1 FROM reports WHERE SHA256_hash=?)",
+                (hash_value,),
+            )
+            return cursor.fetchone()[0]
 
     @error_handler
     def save_data(self, info):
@@ -37,14 +43,15 @@ class SQLiteDatabase(BaseDatabase):
         if not isinstance(info, dict):
             logger.error("Expected 'info' to be a dictionary.")
             return False
-        
+
         db_full_path = self.conn_params
         logger.info(f"Saving data to {db_full_path}")
         # Connection and cursor setup for SQLite
         conn = sqlite3.connect(db_full_path)
         c = conn.cursor()
         # Create the reports table if it doesn't already exist
-        c.execute('''
+        c.execute(
+            """
             CREATE TABLE IF NOT EXISTS reports (
                 SHA256_hash TEXT PRIMARY KEY,
                 highest_classification TEXT,
@@ -59,10 +66,12 @@ class SQLiteDatabase(BaseDatabase):
                 images TEXT,
                 full_text TEXT
             )
-        ''')
+        """
+        )
 
         # Insert or replace the information into the SQLite database
-        c.execute('''
+        c.execute(
+            """
             INSERT INTO reports (
                 SHA256_hash,
                 highest_classification,
@@ -89,25 +98,27 @@ class SQLiteDatabase(BaseDatabase):
                 MGRS = excluded.MGRS,
                 images = excluded.images,
                 full_text = excluded.full_text
-        ''', (
-            info['file_hash'], 
-            info['highest_classification'], 
-            info['caveats'], 
-            info['file_path'],
-            info['locations'], 
-            info['timeframes'], 
-            info['subjects'], 
-            info['topics'],
-            info['keywords'], 
-            info['MGRS'], 
-            info['images'], 
-            info['full_text']
-        ))
+        """,
+            (
+                info["file_hash"],
+                info["highest_classification"],
+                info["caveats"],
+                info["file_path"],
+                info["locations"],
+                info["timeframes"],
+                info["subjects"],
+                info["topics"],
+                info["keywords"],
+                info["MGRS"],
+                info["images"],
+                info["full_text"],
+            ),
+        )
         conn.commit()
         conn.close()
         logger.info(f"\t\tSaved fallback data to SQLite at {db_full_path}")
         return True
-    
+
     @error_handler
     def delete_data():
         pass

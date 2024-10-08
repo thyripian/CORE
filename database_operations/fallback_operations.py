@@ -1,32 +1,34 @@
 import logging
-import pandas as pd
 from collections import OrderedDict
+
+import pandas as pd
+
 from utilities.configurations.database_config import DatabaseConfig
 from utilities.logging.logging_utilities import error_handler
+
 from .base_database import BaseDatabase
 
 logger = logging.getLogger(__name__)
 
-class CSVFailsafe(BaseDatabase):
 
+class CSVFailsafe(BaseDatabase):
     @error_handler
     def check_exists(self, hash_value):
-            df = DatabaseConfig.all_info_df
-            if df is not None or len(df) > 0:
-                if "SHA256_hash" in df.columns:
-                    return hash_value in df['SHA256_hash'].values
-            else:
-                pass
-                    
+        df = DatabaseConfig.all_info_df
+        if df is not None or len(df) > 0:
+            if "SHA256_hash" in df.columns:
+                return hash_value in df["SHA256_hash"].values
+        else:
+            pass
 
     @error_handler
     def save_data(self, info):
         # Prepare and append information to a CSV file as the final fallback
         logger.info("\n\t\t>>> Trying to store to DataFrame for CSV fallback <<<\n")
         logger.info(f"Current length of all_info_df: {len(DatabaseConfig.all_info_df)}")
-        if 'images' in info.keys():
-             del info['images']
-        ordered_info = OrderedDict(SHA256_hash=info['file_hash'])
+        if "images" in info.keys():
+            del info["images"]
+        ordered_info = OrderedDict(SHA256_hash=info["file_hash"])
         ordered_info.update(info)
 
         # Convert the dictionary to a DataFrame with a single row
@@ -49,4 +51,4 @@ class CSVFailsafe(BaseDatabase):
 
     @error_handler
     def delete_data():
-         pass
+        pass

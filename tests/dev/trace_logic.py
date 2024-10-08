@@ -1,10 +1,10 @@
-import os
 import ast
+import os
 import sys
 
 # Adjust the path to include the 'merlin' directory in sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
-from utilities import DevLogger  # Import your custom logger
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from utilities import DevLogger  # isort: skip
 
 # Initialize the DevLogger
 dev_log = DevLogger().get_logger()
@@ -17,7 +17,7 @@ components = [
 ]
 
 # Specify the base path of your own project
-PROJECT_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+PROJECT_BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
 
 def should_trace(filename):
@@ -38,7 +38,7 @@ def parse_file(filepath, traced_files=None):
 
     try:
         # Open and read the file content
-        with open(filepath, "r") as file:
+        with open(filepath) as file:
             file_content = file.read()
 
         # Parse the file content into an AST
@@ -49,14 +49,12 @@ def parse_file(filepath, traced_files=None):
         # Log the file being traced
         dev_log.info(f"\n\n*********** TRACE ***********")
         dev_log.info(f"STARTING TRACE FOR FILE: {os.path.basename(filepath)}\n")
-        
+
         # Keep track of the files we've traced to avoid cycles
         traced_files.add(filepath)
 
         # Trace imports, function definitions, and function calls
         trace_ast(tree, filepath, traced_files)
-
-       
 
         dev_log.info(f"\n\nCOMPLETED TRACE FOR FILE: {os.path.basename(filepath)}")
         dev_log.info("---------------------------------------------------------\n")
@@ -78,13 +76,17 @@ def trace_ast(tree, filepath, traced_files):
         # Handle Imports
         if isinstance(node, ast.Import):
             for alias in node.names:
-                dev_log.info(f"IMPORT: {alias.name.upper()} in {os.path.basename(filepath).upper()}")
+                dev_log.info(
+                    f"IMPORT: {alias.name.upper()} in {os.path.basename(filepath).upper()}"
+                )
                 trace_imported_file(alias.name, traced_files)
 
         elif isinstance(node, ast.ImportFrom):
             module = node.module
             if module:
-                dev_log.info(f"IMPORT FROM: {module.upper()} in {os.path.basename(filepath).upper()}")
+                dev_log.info(
+                    f"IMPORT FROM: {module.upper()} in {os.path.basename(filepath).upper()}"
+                )
                 trace_imported_file(module, traced_files)
 
         # Handle Variable Assignments
@@ -99,22 +101,30 @@ def trace_ast(tree, filepath, traced_files):
 
         # Handle Function Definitions
         elif isinstance(node, ast.FunctionDef):
-            dev_log.info(f"\nFUNCTION DEFINITION: {node.name.upper()} in {os.path.basename(filepath).upper()} at line {node.lineno}")
+            dev_log.info(
+                f"\nFUNCTION DEFINITION: {node.name.upper()} in {os.path.basename(filepath).upper()} at line {node.lineno}"
+            )
             trace_function_body(node, filepath, traced_files)
 
         # Handle Class Definitions
         elif isinstance(node, ast.ClassDef):
-            dev_log.info(f"\nCLASS DEFINITION: {node.name.upper()} in {os.path.basename(filepath).upper()} at line {node.lineno}")
+            dev_log.info(
+                f"\nCLASS DEFINITION: {node.name.upper()} in {os.path.basename(filepath).upper()} at line {node.lineno}"
+            )
             for sub_node in node.body:
                 if isinstance(sub_node, ast.FunctionDef):
-                    dev_log.info(f"  METHOD: {sub_node.name.upper()} in class {node.name.upper()} at line {sub_node.lineno}")
+                    dev_log.info(
+                        f"  METHOD: {sub_node.name.upper()} in class {node.name.upper()} at line {sub_node.lineno}"
+                    )
                     trace_function_body(sub_node, filepath, traced_files)
 
     # Log all variables found after imports and definitions
     if variable_names:
         dev_log.info("\nVARIABLES DEFINED IN FILE:")
         for var_name in sorted(variable_names):
-            dev_log.info(f"VARIABLE: {var_name.upper()} in {os.path.basename(filepath).upper()}")
+            dev_log.info(
+                f"VARIABLE: {var_name.upper()} in {os.path.basename(filepath).upper()}"
+            )
 
         dev_log.info("\nEND OF VARIABLE LIST\n")
 
@@ -127,7 +137,9 @@ def trace_function_body(node, filepath, traced_files):
     for sub_node in ast.walk(node):
         if isinstance(sub_node, ast.Call):
             func_name = get_function_name(sub_node)
-            dev_log.info(f"CALL: {func_name.upper()} in {os.path.basename(filepath).upper()} at line {sub_node.lineno}")
+            dev_log.info(
+                f"CALL: {func_name.upper()} in {os.path.basename(filepath).upper()} at line {sub_node.lineno}"
+            )
 
             # If the function is imported from another file, trace it
             trace_imported_file(func_name, traced_files)
@@ -168,15 +180,18 @@ def get_function_name(node):
         return "<unknown function>"
 
 
-
 def trace_imported_file(module_name, traced_files):
     """
     Trace the imported module if it exists in the project directory.
     """
-    module_path = module_name.replace('.', '/') + '.py'
+    module_path = module_name.replace(".", "/") + ".py"
     full_path = os.path.join(PROJECT_BASE_PATH, module_path)
 
-    if os.path.exists(full_path) and should_trace(full_path) and full_path not in traced_files:
+    if (
+        os.path.exists(full_path)
+        and should_trace(full_path)
+        and full_path not in traced_files
+    ):
         dev_log.info(f"Tracing imported file: {full_path}")
         parse_file(full_path, traced_files)
 

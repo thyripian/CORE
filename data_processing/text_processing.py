@@ -1,13 +1,14 @@
 import json
 import logging
 import re
+
 from sklearn.decomposition import NMF  # Non-negative Matrix Factorization
-from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS, TfidfVectorizer
 
 from utilities import Keywords
 
 logger = logging.getLogger(__name__)
+
 
 # Function to identify and retain unique subjects from a list by removing duplicates.
 def unique_subjects(subject_list):
@@ -25,24 +26,25 @@ def unique_subjects(subject_list):
     for subject in subject_list:
         # Clean the text by removing "None" strings, trimming spaces, and converting to lower case
 
-        cleaned_text = subject['text'].replace("None", "").strip().lower()
-        
+        cleaned_text = subject["text"].replace("None", "").strip().lower()
+
         # Remove special characters, keeping only alphanumeric and spaces
-        cleaned_text = re.sub(r'[^a-z0-9 ]', '', cleaned_text)
-        
+        cleaned_text = re.sub(r"[^a-z0-9 ]", "", cleaned_text)
+
         # Replace multiple spaces with a single space
-        cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
-        
+        cleaned_text = re.sub(r"\s+", " ", cleaned_text)
+
         # Create a tuple of the cleaned text and its label for uniqueness checking
-        subject_tuple = (cleaned_text, subject['label'])
-        
+        subject_tuple = (cleaned_text, subject["label"])
+
         # Add the subject to the list if it's not already seen
         if subject_tuple not in seen and cleaned_text:
-            updated_subject = {'text': cleaned_text, 'label': subject['label']}
+            updated_subject = {"text": cleaned_text, "label": subject["label"]}
             unique_subjects.append(updated_subject)
             seen.add(subject_tuple)
-            
+
     return unique_subjects  # Return the list of unique subjects
+
 
 # Function to extract topics from text using NMF topic modeling.
 def extract_topics(text, num_topics=5, top_n=5):
@@ -57,23 +59,35 @@ def extract_topics(text, num_topics=5, top_n=5):
     Returns:
     list: A list of extracted topics.
     """
-    vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 3))
+    vectorizer = TfidfVectorizer(stop_words="english", ngram_range=(1, 3))
     X = vectorizer.fit_transform(text)
-    
+
     model = NMF(n_components=num_topics, random_state=42)
     model.fit(X)
-    
+
     feature_names = vectorizer.get_feature_names_out()
-    topics = [feature_names[i] for topic_idx, topic in enumerate(model.components_)
-              for i in topic.argsort()[:-top_n - 1:-1]]
-    
+    topics = [
+        feature_names[i]
+        for topic_idx, topic in enumerate(model.components_)
+        for i in topic.argsort()[: -top_n - 1 : -1]
+    ]
+
     # Post-processing to filter out unwanted patterns from topics
-    topics = list(set(topic for topic in topics
-                      if not re.match(r'^\d+$', topic) and
-                      not re.match(r'\b\d{1,2}[a-zA-Z]{1,3}\s?\w{1,5}\s?\d{1,5}\s?\d{1,5}\b', topic) and
-                      len(topic) > 2 and topic not in ENGLISH_STOP_WORDS))
-    
+    topics = list(
+        {
+            topic
+            for topic in topics
+            if not re.match(r"^\d+$", topic)
+            and not re.match(
+                r"\b\d{1,2}[a-zA-Z]{1,3}\s?\w{1,5}\s?\d{1,5}\s?\d{1,5}\b", topic
+            )
+            and len(topic) > 2
+            and topic not in ENGLISH_STOP_WORDS
+        }
+    )
+
     return topics
+
 
 # Function to normalize MGRS (Military Grid Reference System) strings by removing spaces.
 def normalize_mgrs(mgrs_str):
@@ -88,37 +102,6 @@ def normalize_mgrs(mgrs_str):
     """
     return mgrs_str.replace(" ", "")
 
-# # Function to extract the highest classification and any caveats from a body of text using regex.
-# def extract_classification_and_caveats(text):
-#     """
-#     Extract classification and caveats from a given text using regular expressions.
-
-#     Parameters:
-#     text (str): The text from which to extract classifications and caveats.
-
-#     Returns:
-#     tuple: A tuple containing the highest classification and a list of caveats.
-#     """
-#     classifications_priority = ['none_found', 'Classification', 'U', 'C', 'S']
-#     highest_classification = "none_found"
-#     caveats = "none_found"
-
-#     classification_pattern = r'\((U|C|S|Classification)(?://([\w,]+))?\)'
-#     matches = re.findall(classification_pattern, text)
-
-#     if matches:
-#         caveats_set = set()
-#         for match in matches:
-#             classification, caveat_str = match
-#             if classification in classifications_priority:
-#                 if classifications_priority.index(classification) > classifications_priority.index(highest_classification):
-#                     highest_classification = classification
-#             if caveat_str:
-#                 caveats_set.update(caveat_str.split(','))
-
-#         caveats = list(caveats_set) if caveats_set else caveats
-    
-#     return highest_classification, caveats
 
 def extract_classification_and_caveats(text):
     """
@@ -130,12 +113,12 @@ def extract_classification_and_caveats(text):
     Returns:
     tuple: A tuple containing the highest classification and a list of caveats.
     """
-    classifications_priority = ['none_found', 'Classification', 'U', 'C', 'S']
+    classifications_priority = ["none_found", "Classification", "U", "C", "S"]
     highest_classification = "none_found"
     caveats = "none_found"
 
     # Improved regex pattern to capture classification and caveats
-    classification_pattern = r'\((U|C|S|Classification)(?:\/\/([\w,]+))?\)'
+    classification_pattern = r"\((U|C|S|Classification)(?:\/\/([\w,]+))?\)"
     matches = re.findall(classification_pattern, text)
 
     logger.info(f"Matches found: {matches}")
@@ -145,16 +128,21 @@ def extract_classification_and_caveats(text):
         for match in matches:
             classification, caveat_str = match
             if classification in classifications_priority:
-                if classifications_priority.index(classification) > classifications_priority.index(highest_classification):
+                if classifications_priority.index(
+                    classification
+                ) > classifications_priority.index(highest_classification):
                     highest_classification = classification
             if caveat_str:
-                caveats_set.update(caveat_str.split(','))
+                caveats_set.update(caveat_str.split(","))
 
         caveats = list(caveats_set) if caveats_set else caveats
 
-    logger.info(f"Final highest classification: {highest_classification}, caveats: {caveats}")
+    logger.info(
+        f"Final highest classification: {highest_classification}, caveats: {caveats}"
+    )
 
     return highest_classification, caveats
+
 
 # Function to extract keywords from a given text, based on a predefined list of keywords.
 def extract_keywords(text):
@@ -176,6 +164,7 @@ def extract_keywords(text):
             found_keywords.add(keyword)
     return list(found_keywords)
 
+
 # Function to filter out unwanted text patterns, such as MGRS coordinates and numbers.
 def filter_text(text):
     """
@@ -187,15 +176,18 @@ def filter_text(text):
     Returns:
     str: The filtered text.
     """
-    # Regex to match MGRS-like patterns 
-    text = re.sub(r'\b\d{1,2}[A-Za-z]{1,3}(?:\s+[A-Za-z]{1,2})?\s*\d+\s*\d+\b', '', text)
+    # Regex to match MGRS-like patterns
+    text = re.sub(
+        r"\b\d{1,2}[A-Za-z]{1,3}(?:\s+[A-Za-z]{1,2})?\s*\d+\s*\d+\b", "", text
+    )
     # Remove purely numeric strings
-    text = re.sub(r'\b\d+\b', '', text)
+    text = re.sub(r"\b\d+\b", "", text)
 
     # Remove the word "MGRS"
-    text = re.sub(r'\bMGRS\b', '', text)
+    text = re.sub(r"\bMGRS\b", "", text)
 
     return text
+
 
 # Function to clean and normalize timeframes from a list, standardizing them for consistency.
 def clean_timeframes(timeframes_list):
@@ -216,13 +208,29 @@ def clean_timeframes(timeframes_list):
     clean_timeframes = {}  # Using a dictionary to map normalized to original timeframes
     for timeframe in timeframes_list:
         # Match various timeframe formats and normalize
-        if re.match(r'(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})|(\d{1,2}:\d{1,2})|(next|last)?\s?\d+\s?(days?|months?|years?|hours?|minutes?)|(january|february|march|april|may|june|july|august|september|october|november|december)\s?\d{1,4}|(monday|tuesday|wednesday|thursday|friday|saturday|sunday)', timeframe, re.IGNORECASE):
-            normalized_timeframe = re.sub(r'\s+', '', timeframe).lower()  # Normalize the timeframe
-            clean_timeframes[normalized_timeframe] = timeframe.capitalize().strip()  # Map normalized to original
-    
+        if re.match(
+            r"(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})|"  # Matches date formats like YYYY-MM-DD or MM/DD/YYYY
+            r"(\d{1,2}:\d{1,2})|"  # Matches time formats like HH:MM
+            r"(next|last)?\s?\d+\s?(days?|months?|years?|hours?|minutes?)|"  # Matches phrases like "next 5 days"
+            r"(january|february|march|april|may|june|july|august|september|"
+            r"october|november|december)\s?\d{1,4}|"  # Matches month names followed by a day or year
+            r"(monday|tuesday|wednesday|thursday|friday|saturday|sunday)",  # Matches day names
+            timeframe,
+            re.IGNORECASE,
+        ):
+            normalized_timeframe = re.sub(
+                r"\s+", "", timeframe
+            ).lower()  # Normalize the timeframe
+            clean_timeframes[
+                normalized_timeframe
+            ] = timeframe.capitalize().strip()  # Map normalized to original
+
     cleaned = list(clean_timeframes.values())  # Retrieve the human-readable versions
-    
-    return ','.join(cleaned) if cleaned else "none"  # Return the cleaned timeframes as a comma-separated string or "none"
+
+    return (
+        ",".join(cleaned) if cleaned else "none"
+    )  # Return the cleaned timeframes as a comma-separated string or "none"
+
 
 # Function to remove duplicate location entries from a list, ensuring each location is unique.
 def remove_duplicate_locations(locations_list):
@@ -239,8 +247,13 @@ def remove_duplicate_locations(locations_list):
     str: A string of unique, comma-separated location names.
     """
     logger.info("\t\tAttempting to remove duplicate locations.")
-    unique_locations = set(locations_list)  # Remove duplicates by converting the list to a set
-    return ','.join(unique_locations)  # Convert the set back to a comma-separated string
+    unique_locations = set(
+        locations_list
+    )  # Remove duplicates by converting the list to a set
+    return ",".join(
+        unique_locations
+    )  # Convert the set back to a comma-separated string
+
 
 # Function to filter and clean individual topic entries from a list, removing unwanted characters or words.
 def filter_individual_topics(topics):
