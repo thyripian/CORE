@@ -136,6 +136,7 @@ This will start the React application, which can be accessed in your browser (us
 - **utilities/:** Includes helper modules for logging, configurations, and data management.
 
 ## Future Changes / Future Developments
+- **Repair Data Processing:** Following switch to current package structure, data processing broke when "Check for Updates" is clicked. The process works fine when all files already exist in the database, but processing new items is currently broken. This is the next major update, currently in progress.
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
 - **API Reformatting:** Reformatting APIs to match RESTful standards.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
@@ -144,6 +145,7 @@ This will start the React application, which can be accessed in your browser (us
 - **Building out Settings Page:** Allowing user-defined settings within the user interface.
 - **Building out Update History Page:** Tracking all prior updates within the user interface.
 - **Codebase Cleanup:** There are legacy components and outdated code from past versions of the application that will be gradually removed as development progresses.
+- **Repair Unit Tests:** Following switch to current package structure, unit tests broke. They will need to be restructured and rewritten.
 
 ## License
 This software and its source code are the intellectual property of Kevan White (thyripian). No part of this codebase may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the owner.
