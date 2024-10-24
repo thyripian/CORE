@@ -2,7 +2,7 @@ const axios = require('axios');
 
 const checkStatus = async () => {
     try {
-        const response = await axios.get('http://localhost:5005/status');
+        const response = await axios.get('http://localhost:5005/api/status');
         if (response.data && response.data.status === "ready") {
             console.log("Backend service initialized successfully");
             process.exit(0)

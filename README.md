@@ -140,7 +140,6 @@ This will start the React application, which can be accessed in your browser (us
 ## Future Changes / Future Developments
 - **Repair Data Processing:** Following switch to current package structure, data processing broke when "Check for Updates" is clicked. The process works fine when all files already exist in the database, but processing new items is currently broken. This is the next major update, currently in progress.
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
-- **API Reformatting:** Reformatting APIs to match RESTful standards.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
 - **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.
 - **Expanding Map Results:** Expanding map results to show images extracted from files at specific locations.

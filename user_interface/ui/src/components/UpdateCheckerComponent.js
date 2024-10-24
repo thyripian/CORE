@@ -9,7 +9,7 @@ const CheckForUpdates = () => {
   const checkForUpdates = async () => {
     setProcessing(true);
     try {
-      const response = await fetch('http://localhost:5001/api/check-for-updates', { method: 'POST' });
+      const response = await fetch('http://localhost:5001/api/updates/check', { method: 'POST' });
       if (!response.ok) {
         console.error('Network response was not ok:', response.statusText);
         throw new Error('Network response was not ok');

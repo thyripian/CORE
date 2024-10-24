@@ -5,14 +5,15 @@ import sys
 
 import requests
 from elasticsearch import ConnectionError, Elasticsearch, NotFoundError
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
 from utilities.logging.logging_utilities import init_logging, setup_logging
 
-logfile_response = requests.get("http://localhost:5005/get_logfile")
+logfile_response = requests.get("http://localhost:5005/api/logfile")
 logfile_response.raise_for_status()
 logfile = logfile_response.json().get("logfile_name")
 setup_logging(log_filename=logfile, log_directory="../../logs")
@@ -35,14 +36,22 @@ except ImportError as e:
         f"Error importing DatabaseManager, AppInitialization, or AppConfig: {e}"
     )
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 clin = None
 initialized = False
+
 # Fetch configuration from run_app.py
 try:
-    response = requests.get("http://localhost:5005/get_config")  # Adjust port if needed
+    response = requests.get("http://localhost:5005/api/config")  # Adjust port if needed
     response.raise_for_status()
     elastic_conn_info = response.json()
     logger.info(f"Fetched config: {elastic_conn_info}")
@@ -52,8 +61,6 @@ except Exception as e:
 
 if elastic_conn_info:
     try:
-        from elasticsearch import Elasticsearch
-
         hosts = elastic_conn_info.get("hosts")
         logger.info(f"Before type check: TYPE HOSTS: {type(hosts)}")
         logger.info(f"HOSTS TEXT: {hosts}")
@@ -81,6 +88,15 @@ if elastic_conn_info:
 
 
 def query_elasticsearch(query):
+    """
+    Function to query Elasticsearch for the provided search term.
+
+    Args:
+        query (str): The search query string.
+
+    Returns:
+        tuple: A tuple containing a list of records and the total number of hits.
+    """
     if not clin:
         logger.info("Elasticsearch client is not available")
         return [], 0
@@ -114,31 +130,65 @@ def query_elasticsearch(query):
         return [], 0
 
 
-@app.route("/search", methods=["GET"])
-def search():
-    query = request.args.get("query")
+@app.get("/api/search")
+async def search(query: str):
+    """
+    RESTful endpoint to perform a search query in Elasticsearch.
+
+    Args:
+        query (str): The search query string.
+
+    Returns:
+        JSONResponse: A JSON response containing the search results or an error message.
+    """
     if not query:
-        return jsonify({"error": "No query provided"}), 400
+        raise HTTPException(status_code=400, detail="No query provided")
 
     # Perform the search query
     try:
         records, total_hits = query_elasticsearch(query)
         if not records:
-            return jsonify({"error": "No documents found"}), 404
-        return jsonify({"total_hits": total_hits, "records": records})
+            raise HTTPException(status_code=404, detail="No documents found")
+        return JSONResponse(
+            status_code=200, content={"total_hits": total_hits, "records": records}
+        )
     except Exception as e:
         logger.error(f"Error handling search request: {e}")
-        return jsonify({"error": str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.route("/status", methods=["GET"])
-def search_init_status():
+@app.get("/api/status")
+async def search_init_status():
+    """
+    RESTful endpoint to check the readiness status of the application.
+
+    Returns:
+        JSONResponse: A JSON response indicating whether the application is ready or still initializing.
+    """
     global initialized
     if initialized:
-        return jsonify({"status": "ready"}), 200
+        return JSONResponse(status_code=200, content={"status": "ready"})
     else:
-        return jsonify({"status": "initializing"}), 503
+        return JSONResponse(status_code=503, content={"status": "initializing"})
+
+
+@app.exception_handler(Exception)
+async def handle_exception(request: Request, exc: Exception):
+    """
+    RESTful global exception handler.
+
+    Args:
+        request (Request): The incoming request that caused the exception.
+        exc (Exception): The exception that was raised.
+
+    Returns:
+        JSONResponse: A JSON response with the error details.
+    """
+    response = {"error": str(exc)}
+    return JSONResponse(status_code=500, content=response)
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5000)
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=5000, log_level="info")

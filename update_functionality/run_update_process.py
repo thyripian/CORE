@@ -66,7 +66,7 @@ def run_process():
 
     try:
         response = requests.get(
-            "http://localhost:5005/get_settings"
+            "http://localhost:5005/api/settings"
         )  # Adjust port if needed
         response.raise_for_status()
         settings = response.json()
@@ -90,14 +90,7 @@ def run_process():
     # Check if the most recent processed date is before today
     last_processed_date = ElasticsearchDatabase.get_last_processed_date()
     logger.info(f"LAST PROCESSED DATE: {last_processed_date}")
-    # if last_processed_date:
-    #     last_processed_date = datetime.datetime.fromisoformat(last_processed_date)
-    #     today = datetime.datetime.now(datetime.timezone.utc).date()
-    #     if last_processed_date.date() >= today:
-    #         update_progress(0, 0, 'No new updates. Last processed date is today or later.')
-    #         return
-    # Convert Elasticsearch last processed date to datetime if available
-    # Get the most recent file creation date in the processing directory
+
     most_recent_file_creation_date = get_most_recent_file_creation_date(process_dir)
     logger.info(f"MOST RECENT FILE CREATION DATE: {most_recent_file_creation_date}")
 

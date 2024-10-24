@@ -52,7 +52,7 @@ const App = () => {
         setInitializationMessage('Initializing central backend API...');
         while (!isCancelled) {
           try {
-            const response = await axios.post('http://localhost:5005/initialize');
+            const response = await axios.post('http://localhost:5005/api/initialize');
             if (response.data.status === "success") {
               console.log("Central backend initialized successfully");
               break; // Proceed to next step
@@ -79,7 +79,7 @@ const App = () => {
         setInitializationMessage('Initializing search API...');
         while (!isCancelled) {
           try {
-            const response = await axios.get('http://localhost:5000/status');
+            const response = await axios.get('http://localhost:5000/api/status');
             if (response.data.status === 'ready') {
               console.log("Search API initialized successfully");
               break; // Proceed to next step
@@ -106,7 +106,7 @@ const App = () => {
         setInitializationMessage('Initializing update API...');
         while (!isCancelled) {
           try {
-            const response = await axios.get('http://localhost:5001/status');
+            const response = await axios.get('http://localhost:5001/api/status');
             if (response.data.status === 'ready') {
               console.log("Update API initialized successfully");
               break; // All done

@@ -14,20 +14,26 @@ function SearchResultsComponent() {
   useEffect(() => {
     if (query) {
       setLoading(true);
-      fetch(`http://localhost:5000/search?query=${encodeURIComponent(query)}`)
+      setError(null);  // Clear any previous errors
+      fetch(`http://localhost:5000/api/search?query=${encodeURIComponent(query)}`)
         .then(async response => {
-          console.log('Raw response:', response); // Log the raw response
+          console.log('Raw response:', response); // Log the raw response for debugging
+
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
+
           const data = await response.json();
-          console.log('Parsed data:', data); // Log the parsed data
+          console.log('Parsed data:', data); // Log the parsed data for debugging
+
           setResults(data.records);
-          setLoading(false);
         })
         .catch(err => {
-          setError(err);
-          setLoading(false);
+          console.error('Error occurred:', err);  // Log the error for better diagnostics
+          setError(`An error occurred: ${err.message}`);
+        })
+        .finally(() => {
+          setLoading(false);  // Stop loading state after completion
         });
     }
   }, [query]);
@@ -73,10 +79,10 @@ function SearchResultsComponent() {
             <ul className="results-content">
               {results.map((result, index) => (
                 <li key={index}>
-                <p>File: {result.file_path}</p>
-                <p>Processed Time: {result.processed_time}</p>
-                <p>MGRS: {result.MGRS}</p>
-              </li>
+                  <p>File: {result.file_path}</p>
+                  <p>Processed Time: {result.processed_time}</p>
+                  <p>MGRS: {result.MGRS}</p>
+                </li>
               ))}
             </ul>
           ) : (

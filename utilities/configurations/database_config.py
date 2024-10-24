@@ -42,35 +42,28 @@ class DatabaseConfig:
             DatabaseConfig.all_info_df = pd.DataFrame()
 
     @classmethod
-    def check_availability(cls):
-        cls.availability["postgresql"] = cls.try_import(
-            "psycopg2", "from psycopg2 import pool"
-        )
-        cls.availability["elasticsearch"] = cls.try_import(
-            "elasticsearch",
-            "from elasticsearch import Elasticsearch, exceptions as es_exceptions",
-        )
-        cls.availability["sqlite"] = cls.try_import("sqlite3")
-        cls.availability["fallback"] = cls.try_import("pandas", "import pandas as pd")
-
-    @classmethod
-    def try_import(cls, module_name, import_statement=None):
+    def try_import(cls, module_name):
         try:
-            if import_statement:
-                # Dynamically import module using importlib for safety
-                importlib.import_module(import_statement)
-            else:
-                importlib.import_module(module_name)
-
+            module = importlib.import_module(module_name)
             logger.info("%s Available: True", module_name.capitalize())
             return True
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as e:
             logger.error(
-                "Failed to import %s, %s operations will not be available.",
+                "Failed to import %s, %s operations will not be available. Error: %s",
                 module_name,
                 module_name.capitalize(),
+                str(e),
             )
             return False
+
+    @classmethod
+    def check_availability(cls):
+        cls.availability["postgresql"] = cls.try_import("psycopg2.pool")
+        cls.availability["elasticsearch"] = cls.try_import(
+            "elasticsearch"
+        ) and cls.try_import("elasticsearch.exceptions")
+        cls.availability["sqlite"] = cls.try_import("sqlite3")
+        cls.availability["fallback"] = cls.try_import("pandas")
 
     @classmethod
     def set_keyword_dir(cls):
