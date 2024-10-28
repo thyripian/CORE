@@ -50,23 +50,6 @@ class AppConfig:
                 Path(os.path.expanduser(cls.system_config["output"]["fallback_csv"]))
             )
 
-    # @classmethod
-    # def load_user_config(cls, file_path):
-    #     """
-    #     Load the user configuration from a specified JSON file. This configuration
-    #     includes user-specific settings for the application.
-
-    #     Args:
-    #         file_path (str): Path to the user configuration JSON file.
-
-    #     Loads:
-    #         - User-specific configurations.
-    #     """
-    #     with open(file_path, 'r') as user_config_file:
-    #         cls.user_config = json.load(user_config_file)
-    #         cls.validate_configurations(cls.user_config)
-    #         logger.info("User configuration loaded successfully.")
-
     @classmethod
     def load_user_config(cls, config_dict):
         """

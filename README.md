@@ -135,7 +135,7 @@ This will start the React application, which can be accessed in your browser (us
 - **utilities/:** Includes helper modules for logging, configurations, and data management.
 
 ## Future Changes / Future Developments
-- **Refine PDF Data Extraction:** Identified logic error causing multiple extractions for each PDF, significantly impacting processing time.
+- **Repair Progress Tracking in UI**: The switch to batch processing for databasing has broken the progress tracker in the user interface. 
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
 - **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.
