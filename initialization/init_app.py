@@ -23,6 +23,7 @@ class AppInitialization:
     logging_initialized = False
     initialized = False
     logfile = None
+    keywords = None
 
     @classmethod
     @error_handler
@@ -37,11 +38,15 @@ class AppInitialization:
         cls.load_configurations(cls.settings)
         cls.set_database_connections()
         cls.run_connection_tests()
-        cls.load_keywords()
+        cls.load_keywords(cls.user_config_file)
         cls.set_processing_directory()
         cls.initialized = True
         logger.info(f"Initialization flag = {cls.initialized}")
         return cls
+
+    @classmethod
+    def load_nlp(cls):
+        cls.nlp = AppConfig.nlp
 
     @classmethod
     def load_configurations(cls, user_conf):
@@ -64,7 +69,7 @@ class AppInitialization:
         except Exception as e:
             logger.info(f"Error loading user configuration from settings: {e}")
 
-        cls.nlp = AppConfig.nlp
+        cls.load_nlp()
         logger.info("Configurations loaded successfully.")
 
     @classmethod
@@ -169,8 +174,9 @@ class AppInitialization:
 
     @classmethod
     @error_handler
-    def load_keywords(cls):
-        Keywords.load_latest_keywords()
+    def load_keywords(cls, user_config=None):
+        Keywords.load_latest_keywords(user_config=user_config)
+        cls.keywords = Keywords.load_latest_keywords(user_config=user_config)
         logger.info("Keywords loaded successfully.")
 
     @classmethod

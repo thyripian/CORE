@@ -3,6 +3,8 @@ import os
 from contextlib import contextmanager
 from importlib import import_module
 
+import requests
+
 from utilities import DatabaseConfig
 from utilities.configurations.configs import AppConfig
 from utilities.logging.logging_utilities import error_handler
@@ -37,6 +39,21 @@ class DatabaseManager:
         if not DatabaseManager.imports_tested:
             self.test_imports()
             DatabaseManager.imports_tested = True
+
+    @classmethod
+    def set_connection_status(cls, status_dict):
+        """
+        Update the connection_status with the provided statuses.
+        Args:
+            status_dict (dict): A dictionary with keys like 'elasticsearch', 'postgresql', 'sqlite', 'fallback'.
+                                Values should be booleans indicating the availability of each service.
+        """
+        for key, value in status_dict.items():
+            if key in cls.connection_status:
+                cls.connection_status[key] = value
+                logger.info(f"Connection status for {key} updated to {value}")
+            else:
+                logger.warning(f"Unknown key '{key}' in status update.")
 
     @classmethod
     @error_handler
@@ -74,10 +91,21 @@ class DatabaseManager:
         Tests the initial database connections and updates the connection status.
         This method should be called at the start of the application to verify that all configured databases are accessible.
         """
+        # Ensure availability is not None before proceeding
+        if cls.availability is None:
+            logger.error("Availability is not properly set. Skipping connection tests.")
+            return
+
+        # Testing each database connection
         cls.connection_status["elasticsearch"] = cls.try_elasticsearch_connection()
+        logger.info(
+            f"TESTING ELASTIC CONN STAT: {cls.connection_status['elasticsearch']}"
+        )
+        logger.info(f"TESTING ELASTIC CLIN:{cls.es_client}")
         cls.connection_status["postgresql"] = cls.try_postgresql_connection()
         cls.connection_status["sqlite"] = cls.try_sqlite_connection()
-        # Update fallback status if necessary, for now, we assume it's always true.
+
+        # Update fallback status if necessary; fallback is always true by default.
         logger.info(
             f"Initial database connections tested. \n\nRESULTS:\n\t\t{cls.connection_status}"
         )
@@ -331,10 +359,12 @@ class DatabaseManager:
         else:
             for service_key in priority_order:
                 available = cls.connection_status.get(service_key, False)
+                logger.info(f"\nService Key: {service_key}\nAvailable: {available}")
                 if not available:
                     continue
 
                 service_module = cls.get_service_module(service_key)
+                logger.info(f"DB Manager using service module: {service_module}")
                 if service_module:
                     attempt = 0
                     while attempt < retry_limit:
@@ -355,7 +385,7 @@ class DatabaseManager:
             fallback_module = cls.get_service_module("fallback")
             if fallback_module:
                 attempt = 0
-                while attempt < retry_limit:
+                while attempt < retry_limit or False:
                     try:
                         if fallback_module.save_data(data):
                             logger.info("Data saved successfully using fallback CSV.")

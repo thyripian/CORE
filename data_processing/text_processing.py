@@ -5,7 +5,7 @@ import re
 from sklearn.decomposition import NMF  # Non-negative Matrix Factorization
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS, TfidfVectorizer
 
-from utilities import Keywords
+from utilities.keyword_loading import Keywords
 
 logger = logging.getLogger(__name__)
 
@@ -156,6 +156,7 @@ def extract_keywords(text):
     list: A list of found keywords.
     """
     keywords_list = Keywords.keywords_list
+    logger.info(f"Keywords being used in extraction process:\n{keywords_list}")
 
     found_keywords = set()
     text_lower = text.lower()

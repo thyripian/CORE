@@ -3,9 +3,6 @@
 ## Overview
 CORE (Centralized Operational Reporting Engine) is a data processing and querying tool that interacts with Elasticsearch, Postgres, and SQLite, featuring a React-based UI. Follow the instructions below to set up the environment and run the application. *This code is protected intellectual property*; for details, please see the license file or refer to the license section at the end.
 
-**NOTE:** *Data processing logic currently degraded following switch to current package structure. More details in "Future Changes" section below.*
-
-
 ## Prerequisites
 Make sure you have the following software installed on your machine:
 
@@ -138,7 +135,7 @@ This will start the React application, which can be accessed in your browser (us
 - **utilities/:** Includes helper modules for logging, configurations, and data management.
 
 ## Future Changes / Future Developments
-- **Repair Data Processing:** Following switch to current package structure, data processing broke when "Check for Updates" is clicked. The process works fine when all files already exist in the database, but processing new items is currently broken. This is the next major update, currently in progress.
+- **Refine PDF Data Extraction:** Identified logic error causing multiple extractions for each PDF, significantly impacting processing time.
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
 - **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.

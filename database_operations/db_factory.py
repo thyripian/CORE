@@ -23,7 +23,7 @@ class DatabaseFactory:
             connection_status = AppInitialization.connection_status
             logger.info(f"Using APP INIT connection status: {connection_status}")
         else:
-            response = requests.get("http://localhost:5005/get_availabilities")
+            response = requests.get("http://localhost:5005/api/availabilities")
             response.raise_for_status()
             connection_status = response.json().get("connects")
             logger.info(

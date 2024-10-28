@@ -54,7 +54,7 @@ class ElasticsearchDatabase(BaseDatabase):
                     logger.info(f"File exists: {file_name}")
                 return True
             else:
-                logger.info("File does not exist.")
+                logger.info("File does not exist in Elastic.")
                 return False
         except Exception as e:
             logger.error(f"Error checking existence of hash: {e}")

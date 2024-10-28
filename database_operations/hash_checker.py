@@ -26,7 +26,7 @@ class HashChecker:
         # Priority order of database services
         priority_order = ["elasticsearch", "postgresql", "sqlite"]
 
-        response = requests.get("http://localhost:5005/get_availabilities")
+        response = requests.get("http://localhost:5005/api/availabilities")
         response.raise_for_status()
         connects = response.json().get("connects")
         # Check databases in order of priority
