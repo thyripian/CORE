@@ -135,7 +135,7 @@ This will start the React application, which can be accessed in your browser (us
 - **utilities/:** Includes helper modules for logging, configurations, and data management.
 
 ## Future Changes / Future Developments
-- **Adjust Loading Splashpage:** Break out loading splashpage for improved UX. Initial load page will only be for central backend API, and search / update pages will have independent loading screens if the user attempts to nav to them before API initializaiton.
+- **Adjust Loading Splashpage:** Break out loading splashpage for improved UX. Initial load page will only be for central backend API, and search / update pages will have independent loading screens if the user attempts to nav to them before API initialization.
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
 - **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.
