@@ -24,17 +24,21 @@ from utilities.resource_management import calculate_dynamic_batch_size
 base_dir = os.path.dirname(os.path.abspath(__file__))
 logger = logging.getLogger(__name__)
 
-# Use queue for safe concurrent access
-progress_queue = queue.Queue()
+# This will store progress state for use by the API.
+progress_state = {"current": 0, "total": 0, "message": "Not started"}
+progress_lock = (
+    threading.Lock()
+)  # Ensure that updates to progress_state are thread-safe.
 
 
+# Function to update the progress_state safely with a lock
 def update_progress(current, total, message):
-    """
-    Updates the progress in the progress_queue to be used for UI updates.
-    """
-    progress_state = {"current": current, "total": total, "message": message}
-    progress_queue.put(progress_state)
-    logger.info(f"Progress Updated: {progress_state}")
+    global progress_state
+    with progress_lock:
+        progress_state["current"] = current
+        progress_state["total"] = total
+        progress_state["message"] = message
+        logger.info(f"Progress Updated: {progress_state}")
 
 
 def on_demand_initialization(user_config):
