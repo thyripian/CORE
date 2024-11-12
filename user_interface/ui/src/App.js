@@ -23,6 +23,10 @@ const App = () => {
   const [initializationMessage, setInitializationMessage] = useState('');
   const [error, setError] = useState(null);
 
+  // State variables to check readiness of specific services
+  const [searchApiReady, setSearchApiReady] = useState(false);
+  const [updateApiReady, setUpdateApiReady] = useState(false);
+
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -40,22 +44,23 @@ const App = () => {
     };
   }, []);
 
+  // Only check for main backend readiness on app load
   useEffect(() => {
     let isCancelled = false;
     const timeoutDuration = 60000; // 60 seconds
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const startTime = Date.now();
 
-    const initializeSequentially = async () => {
+    const initializeBackend = async () => {
       try {
-        // Step 1: Initialize central backend
         setInitializationMessage('Initializing central backend API...');
         while (!isCancelled) {
           try {
             const response = await axios.post('http://localhost:5005/api/initialize');
             if (response.data.status === "success") {
               console.log("Central backend initialized successfully");
-              break; // Proceed to next step
+              setIsInitialized(true);
+              break; // Proceed as main backend is ready
             } else {
               console.error("Central backend initialization failed:", response.data.message);
             }
@@ -72,65 +77,6 @@ const App = () => {
           // Wait before retrying
           await delay(1000);
         }
-
-        if (isCancelled) return;
-
-        // Step 2: Initialize search API
-        setInitializationMessage('Initializing search API...');
-        while (!isCancelled) {
-          try {
-            const response = await axios.get('http://localhost:5000/api/status');
-            if (response.data.status === 'ready') {
-              console.log("Search API initialized successfully");
-              break; // Proceed to next step
-            } else {
-              console.log("Search API not ready yet.");
-            }
-          } catch (error) {
-            console.error("Error checking search API status:", error);
-          }
-
-          // Check for timeout
-          if (Date.now() - startTime > timeoutDuration) {
-            setError('Initialization is taking longer than expected. Please try again later.');
-            return;
-          }
-
-          // Wait before retrying
-          await delay(1000);
-        }
-
-        if (isCancelled) return;
-
-        // Step 3: Initialize update API
-        setInitializationMessage('Initializing update API...');
-        while (!isCancelled) {
-          try {
-            const response = await axios.get('http://localhost:5001/api/status');
-            if (response.data.status === 'ready') {
-              console.log("Update API initialized successfully");
-              break; // All done
-            } else {
-              console.log("Update API not ready yet.");
-            }
-          } catch (error) {
-            console.error("Error checking update API status:", error);
-          }
-
-          // Check for timeout
-          if (Date.now() - startTime > timeoutDuration) {
-            setError('Initialization is taking longer than expected. Please try again later.');
-            return;
-          }
-
-          // Wait before retrying
-          await delay(1000);
-        }
-
-        if (isCancelled) return;
-
-        // All initializations complete
-        setIsInitialized(true);
       } catch (error) {
         console.error("Unexpected error during initialization:", error);
         if (!isCancelled) {
@@ -139,21 +85,38 @@ const App = () => {
       }
     };
 
-    initializeSequentially();
-
-    // Set a timeout to cancel the initialization after timeoutDuration
-    const timeout = setTimeout(() => {
-      if (!isInitialized) {
-        setError('Initialization is taking longer than expected. Please try again later.');
-      }
-    }, timeoutDuration);
+    initializeBackend();
 
     return () => {
       isCancelled = true;
-      clearTimeout(timeout); // Clear timeout when component unmounts
     };
-  }, [isInitialized]); // Re-run this effect only when isInitialized changes
+  }, []); // Run once on component mount
 
+  // Helper function to check specific API readiness
+  const checkApiReadiness = async (apiUrl, setReadyState) => {
+    try {
+      const response = await axios.get(apiUrl);
+      if (response.data.status === 'ready') {
+        setReadyState(true);
+      } else {
+        console.log(`${apiUrl} not ready yet.`);
+      }
+    } catch (error) {
+      console.error(`Error checking ${apiUrl} status:`, error);
+    }
+  };
+
+  const handleNavigateToSearch = () => {
+    if (!searchApiReady) {
+      checkApiReadiness('http://localhost:5000/api/status', setSearchApiReady);
+    }
+  };
+
+  const handleNavigateToUpdate = () => {
+    if (!updateApiReady) {
+      checkApiReadiness('http://localhost:5001/api/status', setUpdateApiReady);
+    }
+  };
 
   const getPageClass = () => {
     if (!isInitialized) return 'loading'; // Return 'loading' class when not initialized
@@ -201,17 +164,35 @@ const App = () => {
               <h1>CORE</h1>
             </div>
             <nav>
-              <Link to="/search">Search</Link>
-              <Link to="/updates">Check for Updates</Link>
+              <Link to="/search" onClick={handleNavigateToSearch}>Search</Link>
+              <Link to="/updates" onClick={handleNavigateToUpdate}>Check for Updates</Link>
             </nav>
           </header>
           <div className="hidden-buffer"></div>
           <main className="App-main">
             <Routes>
               <Route path="/" element={<HomeComponent />} />
-              <Route path="/search" element={<SearchComponent />} />
+              <Route
+                path="/search"
+                element={
+                  searchApiReady ? (
+                    <SearchComponent />
+                  ) : (
+                    <LoadingSpinner message="Initializing Search API..." />
+                  )
+                }
+              />
               <Route path="/results" element={<SearchResultsComponent />} />
-              <Route path="/updates" element={<UpdateCheckerComponent />} />
+              <Route
+                path="/updates"
+                element={
+                  updateApiReady ? (
+                    <UpdateCheckerComponent />
+                  ) : (
+                    <LoadingSpinner message="Initializing Update API..." />
+                  )
+                }
+              />
               <Route path="/about" element={<AboutComponent />} />
               <Route path="/contact" element={<ContactComponent />} />
               <Route path="/history" element={<HistoryComponent />} />
