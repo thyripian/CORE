@@ -72,25 +72,6 @@ def read_pptx_file(file_path):
     return " ".join(full_text)
 
 
-# # read_pdf_file
-# def read_pdf_file(file_path):
-#     """
-#     Read a PDF file and extract all text from it using the pdfplumber package.
-
-#     Parameters:
-#     file_path (str): The path to the PDF file to read.
-
-
-#     Returns:
-#     str: The extracted text from the PDF file.
-#     """
-#     full_text = []
-#     with pdfplumber.open(file_path) as pdf:
-#         logger.info(f"\t\tPDF has > {len(pdf.pages)} < pages.")
-#         full_text = [
-#             page.extract_text() for page in pdf.pages if page.extract_text()
-#         ]  # Extract text from each page
-#     return " ".join(full_text)
 # Updated read_pdf_file
 def read_pdf_file(file_path):
     """
