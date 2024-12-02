@@ -5,38 +5,62 @@ import '../styles/SearchResultsComponent.css';
 
 function SearchResultsComponent() {
   const location = useLocation();
-  const query = location.state?.query || '';
+  const initialQuery = location.state?.query || '';
+  const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
+  const [viewMode, setViewMode] = useState('list');
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state // 'list' or 'map'
 
   useEffect(() => {
-    if (query) {
+    if (initialQuery) {
       setLoading(true);
       setError(null);  // Clear any previous errors
-      fetch(`http://localhost:5000/api/search?query=${encodeURIComponent(query)}`)
+      fetch(`http://localhost:5000/api/search?query=${encodeURIComponent(initialQuery)}`)
         .then(async response => {
-          console.log('Raw response:', response); // Log the raw response for debugging
-
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-
           const data = await response.json();
-          console.log('Parsed data:', data); // Log the parsed data for debugging
-
           setResults(data.records);
         })
         .catch(err => {
-          console.error('Error occurred:', err);  // Log the error for better diagnostics
           setError(`An error occurred: ${err.message}`);
         })
         .finally(() => {
-          setLoading(false);  // Stop loading state after completion
+          setLoading(false);
         });
     }
-  }, [query]);
+  }, [initialQuery]);
+
+  const handleSearch = () => {
+    if (query.trim()) {
+      setResults([]); // Clear previous results
+      setLoading(true);
+      setError(null);  // Clear previous errors
+      fetch(`http://localhost:5000/api/search?query=${encodeURIComponent(query)}`)
+        .then(async response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setResults(data.records);
+        })
+        .catch(err => {
+          setError(`An error occurred: ${err.message}`);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   const center = { lat: 37.7749, lng: -122.4194 };
   const markers = results
@@ -50,11 +74,12 @@ function SearchResultsComponent() {
           <input
             type="text"
             value={query}
-            readOnly
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="search-input"
             placeholder="Search..."
           />
-          <button className="search-button">Search</button>
+          <button onClick={() => { handleSearch(); setCurrentPage(1); }} className="search-button">Search</button>
         </div>
         <div className="view-toggle">
           <button
@@ -72,19 +97,24 @@ function SearchResultsComponent() {
         </div>
       </div>
       {loading && <p>Loading...</p>}
-      {error && <p>Error: {error.message}</p>}
+      {error && <p>Error: {error}</p>}
       <div className="search-results">
         {viewMode === 'list' ? (
           results.length > 0 ? (
-            <ul className="results-content">
-              {results.map((result, index) => (
-                <li key={index}>
-                  <p>File: {result.file_path}</p>
-                  <p>Processed Time: {result.processed_time}</p>
-                  <p>MGRS: {result.MGRS}</p>
-                </li>
-              ))}
-            </ul>
+            <div className="results-list-container">
+              <ul className="results-content">
+                {results.slice((currentPage - 1) * 10, currentPage * 10).map((result, index) => (
+                  <li key={index}>
+                    <p>File: {result.file_path}</p>
+                    <p>Processed Time: {result.processed_time}</p>
+                    <p>MGRS: {result.MGRS}</p>
+                  </li>
+                ))}
+              </ul>
+              {results.length > currentPage * 10 && (
+                <button className="next-button" onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+              )}
+            </div>
           ) : (
             !loading && <p>No results found</p>
           )

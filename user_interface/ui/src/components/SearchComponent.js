@@ -13,6 +13,13 @@ function SearchComponent() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    // Execute search when 'Enter' key is pressed
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="page-content">
       <div className="search-container">
@@ -21,6 +28,7 @@ function SearchComponent() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="search-input"
             placeholder="Search..."
           />
