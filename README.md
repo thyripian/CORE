@@ -139,7 +139,6 @@ This will start the React application, which can be accessed in your browser (us
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
 - **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.
 - **Expanding Map Results:** Expanding map results to show images extracted from files at specific locations.
-- **Building out Settings Page:** Allowing user-defined settings within the user interface.
 - **Building out Update History Page:** Tracking all prior updates within the user interface.
 - **Codebase Cleanup:** There are legacy components and outdated code from past versions of the application that will be gradually removed as development progresses.
 - **Repair Unit Tests:** Following switch to current package structure, unit tests broke. They will need to be restructured and rewritten.
