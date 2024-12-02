@@ -5,8 +5,10 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  margin-top: calc(-2vh); /* Adjust to center the content properly */
-  transition: all 0.3s ease; /* Add a transition for smooth movement */
+  margin-top: calc(-2vh);
+  /* Adjust to center the content properly */
+  transition: all 0.3s ease;
+  /* Add a transition for smooth movement */
 }
 
 .search-container.searched {
@@ -14,7 +16,8 @@
   justify-content: flex-start;
   margin-top: 0;
   padding: 20px;
-  height: auto; /* Adjust height to fit content */
+  height: auto;
+  /* Adjust height to fit content */
 }
 
 .search-box {
@@ -24,7 +27,8 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  transition: all 0.3s ease; /* Add a transition for smooth movement */
+  transition: all 0.3s ease;
+  /* Add a transition for smooth movement */
 }
 
 .search-container.searched .search-box {
@@ -32,13 +36,19 @@
 }
 
 .search-input {
-  width: 80%; /* Increase the width percentage */
-  padding: 10px; /* Keep the padding for height */
+  width: 80%;
+  /* Increase the width percentage */
+  padding: 10px;
+  /* Keep the padding for height */
   border: 1px solid #ccc;
-  border-radius: 25px; /* Keep the border-radius for rounded corners */
-  font-size: 1.2em; /* Slightly smaller font size */
-  font-family: 'Roboto', sans-serif; /* Ensure the font is applied */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow for better prominence */
+  border-radius: 25px !important;
+  /* Keep the border-radius for rounded corners */
+  font-size: 1.2em;
+  /* Slightly smaller font size */
+  font-family: 'Roboto', sans-serif;
+  /* Ensure the font is applied */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* Add a subtle shadow for better prominence */
 }
 
 .search-button {
@@ -46,12 +56,15 @@
   font-size: 1.2em;
   border: none;
   border-radius: 20px;
-  background-color: black; /* Button background color */
+  background-color: black;
+  /* Button background color */
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-family: 'Roboto', sans-serif; /* Ensure the font is applied */
-  margin-left: 10px; /* Add space between the input and button */
+  font-family: 'Roboto', sans-serif;
+  /* Ensure the font is applied */
+  margin-left: 10px;
+  /* Add space between the input and button */
   /* box-shadow: 0 2px 4px white; */
 }
 
@@ -69,5 +82,6 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', sans-serif; /* Ensure the font is applied */
+  font-family: 'Roboto', sans-serif;
+  /* Ensure the font is applied */
 }
