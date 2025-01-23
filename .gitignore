@@ -82,3 +82,5 @@ elasticsearch-8.10.3/
 config/sys_config_SHELL.json
 config/settings_SHELL.json
 *.png
+config/settings.json
+config/settings.json
