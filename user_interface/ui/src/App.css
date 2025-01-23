@@ -5,9 +5,12 @@
 }
 
 body {
-  background-color: #3a3f49; /* Grey background color */
-  margin: 0; /* Remove default margin */
-  font-family: 'Roboto', sans-serif; /* Apply the font globally */
+  background-color: #3a3f49;
+  /* Grey background color */
+  margin: 0;
+  /* Remove default margin */
+  font-family: 'Roboto', sans-serif;
+  /* Apply the font globally */
   overflow-y: hidden;
 }
 
@@ -17,19 +20,24 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative; /* Needed for positioning the pseudo-elements */
+  position: relative;
+  /* Needed for positioning the pseudo-elements */
 }
 
 .background-image {
   position: absolute;
-  top: calc(61.5%); /* Default position for all pages except About and Contact */
+  top: calc(61.5%);
+  /* Default position for all pages except About and Contact */
   left: 50%;
   width: 100%;
   height: 100%;
-  object-fit: contain;  /* Ensure the entire image fits within the container without cropping */
+  object-fit: contain;
+  /* Ensure the entire image fits within the container without cropping */
   transform: translate(-50%, -50%);
-  z-index: -1;  /* Ensure this is behind the content */
-  opacity: 0.5;  /* Optional: Set the opacity if needed */
+  z-index: -1;
+  /* Ensure this is behind the content */
+  opacity: 0.5;
+  /* Optional: Set the opacity if needed */
 }
 
 .background-image.about,
@@ -52,14 +60,19 @@ body {
 .App-header {
   width: 100%;
   height: 100px;
-  padding-top: 20px; /* Adjust the padding as needed */
-  position: fixed; /* Fix the header at the top */
+  padding-top: 20px;
+  /* Adjust the padding as needed */
+  position: fixed;
+  /* Fix the header at the top */
   top: 0;
   left: 0;
-  z-index: 1000; /* Make sure it's above other content */
+  z-index: 1000;
+  /* Make sure it's above other content */
   display: flex;
-  justify-content: center; /* Center the title horizontally */
-  align-items: center; /* Center the title vertically */
+  justify-content: center;
+  /* Center the title horizontally */
+  align-items: center;
+  /* Center the title vertically */
 }
 
 .home-icon {
@@ -69,14 +82,17 @@ body {
 }
 
 .home-icon img {
-  width: 30px; /* Adjust the size as needed */
-  height: 30px; /* Adjust the size as needed */
+  width: 30px;
+  /* Adjust the size as needed */
+  height: 30px;
+  /* Adjust the size as needed */
 }
 
 .menu-icon {
   position: absolute;
   top: 25px;
-  left: 50px; /* Move the menu icon further to the right */
+  left: 50px;
+  /* Move the menu icon further to the right */
   cursor: pointer;
   width: 20px;
   height: 30px;
@@ -84,14 +100,17 @@ body {
 }
 
 .menu-icon img {
-  width: 20px; /* Adjust the size as needed */
-  height: 15px; /* Adjust the size as needed */
+  width: 20px;
+  /* Adjust the size as needed */
+  height: 15px;
+  /* Adjust the size as needed */
 }
 
 .settings-icon {
   position: absolute;
   top: 20px;
-  left: 85px; /* Move the menu icon further to the right */
+  left: 85px;
+  /* Move the menu icon further to the right */
   cursor: pointer;
   width: 20px;
   height: 30px;
@@ -99,8 +118,10 @@ body {
 }
 
 .settings-icon img {
-  width: 30px; /* Adjust the size as needed */
-  height: 30px; /* Adjust the size as needed */
+  width: 30px;
+  /* Adjust the size as needed */
+  height: 30px;
+  /* Adjust the size as needed */
 }
 
 .dropdown-menu {
@@ -112,7 +133,8 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 2000; /* Ensure the dropdown is above other elements */
+  z-index: 2000;
+  /* Ensure the dropdown is above other elements */
 }
 
 .dropdown-menu a {
@@ -131,7 +153,8 @@ body {
 }
 
 .App-title {
-  margin: 0;
+  margin: -50px 0 0 0;
+  height: 215.633px;
   font-size: 3em;
   font-weight: 700;
   color: rgb(0, 0, 0);
@@ -139,7 +162,8 @@ body {
     -1px -1px 0 white,
     1px -1px 0 white,
     -1px 1px 0 white,
-    1px 1px 0 white; /* White outline */
+    1px 1px 0 white;
+  /* White outline */
 }
 
 nav {
@@ -168,14 +192,19 @@ nav a:hover {
   justify-content: center;
   align-items: center;
   width: 100%;
-  position: relative; /* Ensure it is positioned above the background */
-  z-index: 1; /* Position it above the background */
-  overflow-y: auto; /* Allow scrolling for the main content */
-  height: calc(100vh - 70px); /* Adjust the height to fill the remaining space */
+  position: relative;
+  /* Ensure it is positioned above the background */
+  z-index: 1;
+  /* Position it above the background */
+  overflow-y: auto;
+  /* Allow scrolling for the main content */
+  height: calc(100vh - 70px);
+  /* Adjust the height to fill the remaining space */
 }
 
 /* Add the hidden buffer container */
 .hidden-buffer {
-  height: 70px; /* Height of the fixed header */
+  height: 70px;
+  /* Height of the fixed header */
   width: 100%;
 }

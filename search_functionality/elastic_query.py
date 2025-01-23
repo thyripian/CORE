@@ -113,9 +113,13 @@ def query_elasticsearch(query):
                 if isinstance(mgrs, str):
                     mgrs = json.loads(mgrs)
                 record = {
+                    "SHA256_hash": doc["_id"],
                     "file_path": doc["_source"]["file_path"].split("\\")[-1],
                     "processed_time": doc["_source"]["processed_time"],
                     "MGRS": mgrs,
+                    "highest_classification": doc["_source"].get(
+                        "highest_classification", ""
+                    ),
                 }
                 records.append(record)
         return records, total_hits
@@ -128,6 +132,57 @@ def query_elasticsearch(query):
     except Exception as e:
         logger.error(f"Error querying Elasticsearch: {e}")
         return [], 0
+
+
+def retrieve_report(SHA256_hash: str):
+    """
+    Fetch a single document from Elasticsearch by file_hash (used as _id).
+
+    Args:
+        file_hash (str): The unique identifier for the file in ES.
+
+    Returns:
+        dict: The full document's fields, or an empty dict if not found.
+    """
+    if not clin:
+        logger.info("Elasticsearch client is not available")
+        return {}
+    try:
+        index = elastic_conn_info.get("index")
+
+        # If you used file_hash as the ES _id, you can just call .get
+        doc = clin.get(index=index, id=SHA256_hash)
+
+        # doc["_source"] has all the fields
+        source = doc["_source"]
+
+        # Build your final record. You can either return everything directly,
+        # or sanitize fields / transform as needed.
+        record = {
+            "SHA256_hash": doc["_id"],
+            "highest_classification": source.get("highest_classification", ""),
+            "caveats": source.get("caveats", []),
+            "file_path": source.get("file_path"),
+            "locations": source.get("locations", []),
+            "timeframes": source.get("timeframes", []),
+            "subjects": source.get("subjects", ""),
+            "topics": source.get("topics", ""),
+            "keywords": source.get("keywords", ""),
+            "MGRS": source.get("MGRS", []),
+            "images": source.get("images", []),  # base64 or however stored
+            "full_text": source.get("full_text", ""),
+            "processed_time": source.get("processed_time", ""),
+        }
+        return record
+    except NotFoundError:
+        logger.error(f"Document with file_hash={SHA256_hash} not found.")
+        return {}
+    except ConnectionError as e:
+        logger.error(f"ConnectionError retrieving document from Elasticsearch: {e}")
+        return {}
+    except Exception as e:
+        logger.error(f"Error retrieving document: {e}")
+        return {}
 
 
 @app.get("/api/search")
@@ -154,6 +209,25 @@ async def search(query: str):
         )
     except Exception as e:
         logger.error(f"Error handling search request: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/report/{SHA256_hash}")
+async def get_full_report(SHA256_hash: str):
+    """
+    RESTful endpoint to return report details when clicked in the search results.
+
+    """
+    if not SHA256_hash:
+        raise HTTPException(status_code=400, detail="Unable to find hash.")
+
+    try:
+        record = retrieve_report(SHA256_hash)
+        if not record:
+            raise HTTPException(status_code=404, detail="Document not found")
+        return JSONResponse(status_code=200, content=record)
+    except Exception as e:
+        logger.error(f"Error handling get_full_report request: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

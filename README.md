@@ -12,6 +12,12 @@ Make sure you have the following software installed on your machine:
 - Elasticsearch (version 8.x or above)
 - PostgreSQL (version >= 12.x)
 
+### Ensure you have the synthetic data if you intend to run the app:
+If you have access to the synth data repo, you can download the data from:
+https://github.com/thyripian/CORE_synth_data
+
+*If you would like to request access, send an email with your name, affiliation, and justification to thyripian@gmail.com*
+
 ## Project Setup
 ### 1. Clone the Repository
 ```bash
@@ -137,7 +143,7 @@ This will start the React application, which can be accessed in your browser (us
 ## Future Changes / Future Developments
 - **API Expansion:** Expanding API functionality for advanced querying and data manipulation.
 - **User Roles and Permissions:** Introducing user roles for different access levels within the frontend.
-- **Updating Search Results:** Updating mapping logic, refining results list, and adding individual result-specific viewing pages.
+- **Updating Search Results:** Updating mapping logic, refining results list, and refining individual result-specific viewing pages.
 - **Expanding Map Results:** Expanding map results to show images extracted from files at specific locations.
 - **Building out Update History Page:** Tracking all prior updates within the user interface.
 - **Codebase Cleanup:** There are legacy components and outdated code from past versions of the application that will be gradually removed as development progresses.

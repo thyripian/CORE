@@ -11,6 +11,7 @@ import ContactComponent from './components/ContactComponent';
 import HistoryComponent from './components/HistoryComponent';
 import SettingsComponent from './components/SettingsComponent';
 import LoadingSpinner from './components/LoadingSpinner';
+import FullReportComponent from './components/FullReportComponent';
 import './App.css';
 
 const App = () => {
@@ -197,6 +198,7 @@ const App = () => {
               <Route path="/contact" element={<ContactComponent />} />
               <Route path="/history" element={<HistoryComponent />} />
               <Route path="/settings" element={<SettingsComponent />} />
+              <Route path="/view-report/:hash" element={<FullReportComponent />} />
             </Routes>
           </main>
         </>

@@ -1,0 +1,85 @@
+.full-report-container {
+    margin-top: 75px;
+    max-width: 90vw;
+    height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #272727;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.full-report-container h2 {
+    font-size: 36px;
+    color: #ffffff;
+    margin: -5px 0 25px 0;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+.form-style {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+.form-value {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.report-image {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+    margin-top: 20px;
+}
+
+.full-text {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    /* Preserve formatting for text */
+}
