@@ -79,3 +79,6 @@ elasticsearch-8.10.3/
 
 # Ignore batch files (.bat)
 *.bat
+config/sys_config_SHELL.json
+config/settings_SHELL.json
+*.png
