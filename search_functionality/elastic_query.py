@@ -185,28 +185,125 @@ def retrieve_report(SHA256_hash: str):
         return {}
 
 
+# @app.get("/api/search")
+# async def search(query: str):
+#     """
+#     RESTful endpoint to perform a search query in Elasticsearch.
+
+#     Args:
+#         query (str): The search query string.
+
+#     Returns:
+#         JSONResponse: A JSON response containing the search results or an error message.
+#     """
+#     if not query:
+#         raise HTTPException(status_code=400, detail="No query provided")
+
+#     # Perform the search query
+#     try:
+#         records, total_hits = query_elasticsearch(query)
+#         if not records:
+#             raise HTTPException(status_code=404, detail="No documents found")
+#         return JSONResponse(
+#             status_code=200, content={"total_hits": total_hits, "records": records}
+#         )
+#     except Exception as e:
+#         logger.error(f"Error handling search request: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
+
+# @app.get("/api/search")
+# async def search(query: str, page: int = 1, results_per_page: int = 10):
+#     """
+#     RESTful endpoint to perform a search query in Elasticsearch with pagination.
+
+#     Args:
+#         query (str): The search query string.
+#         page (int): The page number (defaults to 1).
+#         results_per_page (int): Number of results per page (defaults to 10).
+
+#     Returns:
+#         JSONResponse: A JSON response containing search results or an error message.
+#     """
+#     if not query:
+#         raise HTTPException(status_code=400, detail="No query provided")
+
+#     try:
+#         index = elastic_conn_info.get("index")
+#         start_from = (page - 1) * results_per_page  # Calculate offset
+
+#         response = clin.search(
+#             index=index,
+#             query={"match": {"full_text": query}},
+#             from_=start_from,
+#             size=results_per_page,
+#         )
+
+#         records = []
+#         total_hits = response["hits"]["total"]["value"]
+
+#         for doc in response["hits"]["hits"]:
+#             records.append({
+#                 "SHA256_hash": doc["_id"],
+#                 "file_path": doc["_source"]["file_path"],
+#                 "processed_time": doc["_source"]["processed_time"],
+#                 "MGRS": doc["_source"].get("MGRS", "N/A"),
+#                 "highest_classification": doc["_source"].get("highest_classification", ""),
+#             })
+
+#         return JSONResponse(status_code=200, content={"total_hits": total_hits, "records": records})
+
+#     except Exception as e:
+#         logger.error(f"Error handling search request: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/api/search")
-async def search(query: str):
+async def search(query: str, page: int = 1, results_per_page: int = 10):
     """
-    RESTful endpoint to perform a search query in Elasticsearch.
+    RESTful endpoint to perform a search query in Elasticsearch with pagination.
 
     Args:
         query (str): The search query string.
+        page (int): The page number (defaults to 1).
+        results_per_page (int): Number of results per page (defaults to 10).
 
     Returns:
-        JSONResponse: A JSON response containing the search results or an error message.
+        JSONResponse: A JSON response containing search results or an error message.
     """
     if not query:
         raise HTTPException(status_code=400, detail="No query provided")
 
-    # Perform the search query
     try:
-        records, total_hits = query_elasticsearch(query)
-        if not records:
-            raise HTTPException(status_code=404, detail="No documents found")
+        index = elastic_conn_info.get("index")
+        start_from = (page - 1) * results_per_page  # Calculate offset
+
+        response = clin.search(
+            index=index,
+            query={"match": {"full_text": query}},
+            from_=start_from,
+            size=results_per_page,
+        )
+
+        records = []
+        total_hits = response["hits"]["total"]["value"]
+
+        for doc in response["hits"]["hits"]:
+            records.append(
+                {
+                    "SHA256_hash": doc["_id"],
+                    "file_path": doc["_source"]["file_path"],
+                    "processed_time": doc["_source"]["processed_time"],
+                    "MGRS": doc["_source"].get("MGRS", "N/A"),
+                    "highest_classification": doc["_source"].get(
+                        "highest_classification", ""
+                    ),
+                }
+            )
+
         return JSONResponse(
             status_code=200, content={"total_hits": total_hits, "records": records}
         )
+
     except Exception as e:
         logger.error(f"Error handling search request: {e}")
         raise HTTPException(status_code=500, detail=str(e))

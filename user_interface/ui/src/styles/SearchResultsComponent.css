@@ -115,7 +115,7 @@
 }
 
 .results-list-container {
-  max-height: 650px;
+  max-height: 645px;
   /* Adjust height as needed */
   overflow-y: auto;
   /* Scrollable list view */
@@ -183,8 +183,38 @@
   margin-top: 20px !important;
 }
 
-.next-button {
-  margin-top: 10px;
+.total-results {
+  position: fixed;
+  top: 182px;
+  left: 290px;
+  /* Move search box-wrapper more to the left */
+  z-index: 3;
+  /* Ensure it stays above other elements */
+  width: auto;
+  /* Adjust width to prevent overlapping with other elements */
+  margin-bottom: 20px;
+}
+
+.pagination {
+  position: fixed;
+  /* Fixes the element relative to the viewport */
+  bottom: 9px;
+  /* 20px from the bottom; adjust as needed */
+  left: 50%;
+  /* Positions the left edge at the center of the viewport */
+  transform: translateX(-50%);
+  /* Offsets the element by half its width to truly center it */
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 10;
+  /* Ensure it stays above other elements */
+  margin: 0;
+  /* Remove any default margins */
+}
+
+
+.pagination-button {
   padding: 10px 20px;
   font-size: 1em;
   background-color: #007bff;
@@ -192,8 +222,10 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  z-index: 1;
 }
 
-.next-button:hover {
+.pagination-button:hover {
   background-color: #0056b3;
 }
